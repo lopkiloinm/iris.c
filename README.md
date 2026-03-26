@@ -55,6 +55,11 @@ pip install huggingface_hub && python download_model.py zimage-turbo
 ./iris -d zimage-turbo -p "a fish" -o fish.png
 ```
 
+New Z-Image additions:
+- Use **[BennyDaBall/Qwen3-4b-Z-Image-Engineer-V4](https://huggingface.co/BennyDaBall/Qwen3-4b-Z-Image-Engineer-V4)** as the text encoder instead of generic Qwen3-4B.
+- Use the **Moody Mix checkpoint** (slightly different fused tensors architecture instead of ZIT):
+  `https://civitai.com/api/download/models/2745638?type=Model&format=SafeTensor&size=full&fp=bf16`
+
 That's it. No Python runtime or CUDA toolkit required at inference time.
 
 ## Example Output
@@ -355,13 +360,22 @@ Download model weights from HuggingFace using one of these methods:
 pip install huggingface_hub && python download_model.py zimage-turbo
 ```
 
+**Z-Image text encoder (recommended):**
+- `https://huggingface.co/BennyDaBall/Qwen3-4b-Z-Image-Engineer-V4`
+
+**Moody Mix checkpoint** (slightly different fused tensors architecture instead of ZIT):
+```bash
+curl -L "https://civitai.com/api/download/models/2745638?type=Model&format=SafeTensor&size=full&fp=bf16" -o moodymix.safetensors
+```
+
 | Model | Directory | Size | Components |
 |-------|-----------|------|------------|
 | 4B distilled | `./flux-klein-4b` | ~16GB | VAE (~300MB), Transformer (~4GB), Qwen3-4B (~8GB, BennyDaBall variant) |
 | 4B base | `./flux-klein-4b-base` | ~16GB | VAE (~300MB), Transformer (~4GB), Qwen3-4B (~8GB, BennyDaBall variant) |
 | 9B distilled | `./flux-klein-9b` | ~30GB | VAE (~300MB), Transformer (~17GB), Qwen3-8B (~15GB) |
 | 9B base | `./flux-klein-9b-base` | ~30GB | VAE (~300MB), Transformer (~17GB), Qwen3-8B (~15GB) |
-| Z-Image-Turbo | `./zimage-turbo` | ~12GB | VAE, Transformer (~6B), Qwen3-4B (BennyDaBall variant) |
+| Z-Image-Turbo | `./zimage-turbo` | ~12GB | VAE, Transformer (~6B), Qwen3-4b-Z-Image-Engineer-V4 |
+| Moody Mix checkpoint | `./zimage-turbo-moodymix` | varies | Fused tensors architecture variant (instead of ZIT) + Qwen3-4b-Z-Image-Engineer-V4 |
 
 ## How Fast Is It?
 
@@ -445,7 +459,7 @@ Z-Image-Turbo uses an S3-DiT single-stream architecture with noise and context r
 | Head dim | 128 |
 | Main layers | 30 |
 | Refiner layers | 2 (noise) + 2 (context) |
-| Text Encoder | Qwen3-4B (hidden_states[-2], BennyDaBall variant) |
+| Text Encoder | Qwen3-4b-Z-Image-Engineer-V4 (hidden_states[-2]) |
 | VAE | 16 latent channels, patch_size=2 |
 
 ## Timestep Schedules
