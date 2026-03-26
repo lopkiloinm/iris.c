@@ -1,0 +1,32 @@
+# Object files
+*.o
+
+# Compiled binaries
+flux
+
+# Model weights (large files)
+flux-klein-*/
+zimage-*/
+
+# Tokens and planning docs
+hf_token.txt
+9B.md
+
+# Misc directories (tests, images, utilities, markdown files)
+misc/
+documents/
+
+# IDE and editor files
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+*.a
+*.so
+*.dylib
+*.safetensors
+
+moodyMix_zitV10DPO.safetensors
