@@ -368,6 +368,23 @@ pip install huggingface_hub && python download_model.py zimage-turbo
 curl -L "https://civitai.com/api/download/models/2745638?type=Model&format=SafeTensor&size=full&fp=bf16" -o moodymix.safetensors
 ```
 
+**Build `zimage-turbo-moodymix-clean` from that checkpoint:**
+```bash
+# 1) Keep the original filename expected by the builder script
+cp moodymix.safetensors moodyMix_zitV10DPO.safetensors
+
+# 2) Make sure base Z-Image assets exist (config/tokenizer/vae source)
+python download_model.py zimage-turbo
+
+# 3) Build the clean Moody Mix directory
+python create_moodymix_clean.py
+
+# 4) Test
+./iris -d zimage-turbo-moodymix-clean -p "a fish" -o fish.png
+```
+
+`create_moodymix_clean.py` rewrites tensor names by removing the `model.diffusion_model.` prefix, preserves tensor data/offsets, writes a single `transformer/diffusion_pytorch_model.safetensors` plus index file, and copies `model_index.json`, `text_encoder`, `tokenizer`, and `vae` from `zimage-turbo`.
+
 | Model | Directory | Size | Components |
 |-------|-----------|------|------------|
 | 4B distilled | `./flux-klein-4b` | ~16GB | VAE (~300MB), Transformer (~4GB), Qwen3-4B (~8GB, BennyDaBall variant) |
@@ -375,7 +392,7 @@ curl -L "https://civitai.com/api/download/models/2745638?type=Model&format=SafeT
 | 9B distilled | `./flux-klein-9b` | ~30GB | VAE (~300MB), Transformer (~17GB), Qwen3-8B (~15GB) |
 | 9B base | `./flux-klein-9b-base` | ~30GB | VAE (~300MB), Transformer (~17GB), Qwen3-8B (~15GB) |
 | Z-Image-Turbo | `./zimage-turbo` | ~12GB | VAE, Transformer (~6B), Qwen3-4b-Z-Image-Engineer-V4 |
-| Moody Mix checkpoint | `./zimage-turbo-moodymix` | varies | Fused tensors architecture variant (instead of ZIT) + Qwen3-4b-Z-Image-Engineer-V4 |
+| Moody Mix checkpoint | `./zimage-turbo-moodymix-clean` | varies | Fused tensors architecture variant (instead of ZIT) + Qwen3-4b-Z-Image-Engineer-V4 |
 
 ## How Fast Is It?
 
